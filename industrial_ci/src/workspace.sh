@@ -53,7 +53,7 @@ function ici_parse_repository_url {
 }
 
 function ici_apt_install {
-    ici_cmd ici_quiet ici_filter "Setting up" ici_asroot apt-get -qq install -y --no-upgrade --no-install-recommends "$@"
+    ici_cmd ici_quiet ici_filter "Setting up" ici_asroot apt-get -qq install -y --no-upgrade --no-install-recommends --fix-missing "$@"
 }
 
 function ici_pip_install {
@@ -127,7 +127,7 @@ function ici_init_apt {
         ici_retry 3 ici_cmd apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
     fi
 
-    ici_cmd ici_asroot apt-get update -qq
+    ici_cmd ici_asroot apt-get update -qq --fix-missing
 
     local debs_default=(apt-utils build-essential gnupg2 dirmngr)
     if ! ls /etc/ssl/certs/* 2&> /dev/null; then
@@ -155,7 +155,7 @@ function ici_init_apt {
         ici_setup_gpg_key
 
         >/dev/null ici_asroot tee "/etc/apt/sources.list.d/ros${ROS_VERSION}-latest.list" <<< "deb [${deb_opts[*]}] ${ROS_REPOSITORY_PATH} $(lsb_release -sc) main"
-        ici_cmd ici_asroot apt-get update -qq
+        ici_cmd ici_asroot apt-get update -qq --fix-missing
     fi
 
     # If more DEBs needed during preparation, define ADDITIONAL_DEBS variable where you list the name of DEB(S, delimitted by whitespace)
